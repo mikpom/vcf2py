@@ -464,7 +464,7 @@ class VariantFile(object):
             How to parse GT fields *Default: string*
 
             By default GT field is parsed according to spec, i.e.
-            a string of form "1/2".
+            a string e.g. of form "1/2".
 
             If `split` then for each variant in the output
             will contain a ndarray with 1 or 0 depending
@@ -504,9 +504,9 @@ class VariantFile(object):
                        ('alt', 'O'), ('id', 'O'), ('qual', '<f8'),
                        ('filter', 'O')])
         >>> samples["SAMPLE1"]["GT"]
-        gt [[ 0  1  0]
-            [ 0  0  1]
-            [-1 -1 -2]]
+        [[ 0  1  0]
+         [ 0  0  1]
+         [-1 -1 -2]]
 
         """
         if region is not None:

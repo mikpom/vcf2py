@@ -72,12 +72,13 @@ Variants and their data can be easily imported into Pandas
 
 ### Parsing genotypes ###
 
-Genotypes by default declared in as `String` in VCF header.  However
-they are rather important so additinal parsing is implemented.  It can
-be specified to `VariantFile.read` function with `genotypes` parameter.
-In addition to default `genotypes="string"` on can provide "split" or "sum".
+Genotypes in VCF files are declared as `String` type.  However they
+are rather important in genetic analysis so additinal parsing tools
+are implemented.  `genotypes` parameter of `VariantFile.read` provides
+additional control.  In addition to default `genotypes="string"` it
+allowes `split` or `sum` values.
 
-Consider the following VCF file
+Consider the following VCF file with three variants in total:
 
     ##fileformat=VCFv4.2
     ##FORMAT=<ID=GT,Number=1,Type=String,Description="Phased Genotype">
@@ -85,26 +86,28 @@ Consider the following VCF file
     chr24	166	.	T	TG,C	100	.	.	GT	0/1/2	0/1/0
     chr24	167	.	T	TG	100	.	.	GT	./.	0/1
 
-`split` gives the following
+`genotypes=split` gives the following
 
     >>> from vcf2py import VariantFile
     >>> f = VariantFile("file.vcf")
     >>> vrt, info, samples = f.read(samples=True, genotypes="split")
     >>> samples["SAMPLE1"]["GT"]
-    gt [[ 0  1  0]
-        [ 0  0  1]
-        [-1 -1 -2]]
+    [[ 0  1  0]
+     [ 0  0  1]
+     [-1 -1 -2]]
 
-I.e.  for each variant output will contain a ndarray with `1` or `0`
-depending on presense of allele in particular sample.  `-1` stands for
-`.` in GT field.
+i.e.  output will contain a ndarray with `1` or `0` depending on
+presense of variant in allele for each of the variants.  `-1` stands
+for `.` in GT field, `-2` is a filling value in case of smaller ploidy
+to make array homogenous.
 
 
-While `sum` gives
+`genotypes=sum` gives
 
     >>> vrt, info, samples = f.read(samples=True, genotypes="sum")
     >>> samples["SAMPLE1"]["GT"]
     array([1, 1, 0], dtype=int8)
 
-I.e. an int for each variant indicating number of alleles with variant.
+i.e. an integer value for each variant indicating number of alleles
+with the variant.
 
