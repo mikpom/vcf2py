@@ -49,6 +49,7 @@ def grouper(it, n, fill=None):
     args = [it] * n
     return itertools.zip_longest(*args, fillvalue=fill)
 
+
 vcf_numpy_types = {
     "Float": np.float64,
     "Integer": np.int64,
@@ -147,7 +148,7 @@ class VariantFile(object):
         ----------
         vcf : path-like
             Path to file with variants
-        
+
         index : str or bool
             By default tries ``vcf``.tbi as index file.
             if index=True and index not found NoIndexFoundError
@@ -222,13 +223,15 @@ class VariantFile(object):
                 # if info_or_format == "format" and field == "GT":
                 #     self.parsers[info_or_format][field] = _parse_gt
                 # else:
-                if sz>1:
+                if sz > 1:
                     miss_value = [None] * sz
-                elif num in ['G', '.']:
+                elif num in ["G", "."]:
                     miss_value = (None,)
                 else:
                     miss_value = None
-                self.missing_values.setdefault(info_or_format, {}).setdefault(field, miss_value)
+                self.missing_values.setdefault(info_or_format, {}).setdefault(
+                    field, miss_value
+                )
                 self.default_parsers.setdefault(info_or_format, {}).setdefault(
                     field, self._make_parser_func(tp, num)
                 )
@@ -420,7 +423,7 @@ class VariantFile(object):
             numpy_type = object
             # Every item in a tuple is converted accordingly
             python_type = vcf_python_types[TYPE]
-            
+
         else:
             raise ValueError("Unknown NUMBER:" + num)
         return {
@@ -428,7 +431,7 @@ class VariantFile(object):
             "type": TYPE,
             "numpy_type": numpy_type,
             "numpy_size": size,
-            "python_type" : python_type,
+            "python_type": python_type,
             "number": num,
             "description": DESCRIPTION,
         }
@@ -447,7 +450,7 @@ class VariantFile(object):
         """
         Returns parsed variant data as a dict of NumPy arrays with structured
         dtype.
-        
+
         Parameters
         ----------
         info : bool
@@ -486,7 +489,7 @@ class VariantFile(object):
         Parsing genotypes.
 
         Consider the following VCF file
-        
+
         ##fileformat=VCFv4.2
         ##FORMAT=<ID=GT,Number=1,Type=String,Description="Phased Genotype">
         #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SAMPLE1	SAMPLE2
@@ -734,7 +737,7 @@ class VariantFile(object):
             max_gt_len = max([v.shape[1] for v in values])
             # Genotypes might be of different length in the chunk
             # First they need to be padded to the same shape
-            if max_gt_len!=min_gt_len:
+            if max_gt_len != min_gt_len:
                 padded = [
                     np.pad(
                         v,
@@ -902,7 +905,7 @@ class _DataParser(object):
                     v = conv(val, an)
                 except ValueError as exc:
                     if val == "" or val == ".":
-                        continue # missing value not touched
+                        continue  # missing value not touched
                     else:
                         raise exc
                 info1[self.order["info"][key]] = v
@@ -972,5 +975,7 @@ class RowIterator:
         self.fh.close()
 
 
-no_parser = lambda v, a: v # VariantFile._make_parser_func(np.object_, 1, convert=False)
+no_parser = (
+    lambda v, a: v
+)  # VariantFile._make_parser_func(np.object_, 1, convert=False)
 identity_func = lambda v: v

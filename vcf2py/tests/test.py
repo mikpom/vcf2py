@@ -53,7 +53,6 @@ class VCFFileTestCaseBase(unittest.TestCase):
                 fh.write("\n")
 
     def tearDown(self):
-        
         self.testdir.cleanup()
 
 
@@ -150,7 +149,6 @@ class ParseVLGenotypes(VCFFileTestCase2Samples):
         f = VariantFile(self.testfile)
         vrt, info, samples = f.read(info=True, samples=True, genotypes="sum")
 
-        
         gt = samples["SAMPLE1"]["GT"]
 
         self.assertEqual(gt[0], 1)

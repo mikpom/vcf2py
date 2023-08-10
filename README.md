@@ -43,7 +43,7 @@ Consider the following VCF file `1KG_example.vcf`
 
 After parsing it gives the following
 
-    >>> f = vcf.VariantFile('1KG_example.vcf')
+    >>> f = vcf.VariantFile("1KG_example.vcf")
     >>> vrt, info, samples = f.read(info=True)
     >>> info
     array([(0., 0, 2548, 4, 0.  , 0.  , 0., 0., 0.  , ('SNP',), False, 21624),
